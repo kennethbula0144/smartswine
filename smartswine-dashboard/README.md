@@ -1,6 +1,10 @@
-# React + Vite
+# SmartSwine Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The live AI camera screen is available at both `/live-pen` and `/model`.
+
+## Development setup
+
+This dashboard uses React, Vite, and Oxlint.
 
 Currently, two official plugins are available:
 

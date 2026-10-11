@@ -225,8 +225,16 @@ class SupabaseStore:
             "updated_at": timestamp,
             "payload": record,
         }
-        result = self._request("POST", payload=[row])
+        result = self._request(
+            "POST",
+            payload=[row],
+            prefer="return=representation",
+        )
         response_row = result[0] if isinstance(result, list) and result else result
+        if not isinstance(response_row, dict):
+            raise RuntimeError(
+                "Supabase did not return the created record. Verify the records table permissions."
+            )
         return self._decode(response_row)
 
     def update(

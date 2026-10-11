@@ -17,6 +17,7 @@ export default function App() {
         <Route path="/pig-records" element={<PigRecords />} />
         <Route path="/health-alerts" element={<HealthAlerts />} />
         <Route path="/live-pen" element={<LivePen />} />
+        <Route path="/model" element={<LivePen />} />
         <Route path="/live-camera" element={<LiveCamera />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/feed-costs" element={<FeedCosts />} />

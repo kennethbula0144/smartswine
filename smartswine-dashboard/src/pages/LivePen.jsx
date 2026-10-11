@@ -216,13 +216,26 @@ export default function LivePen() {
     const height = media?.videoHeight || media?.naturalHeight;
     if (!media || !width || !height || aiProcessing) return;
 
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    canvas.getContext("2d").drawImage(media, 0, 0, canvas.width, canvas.height);
-    canvas.toBlob(async (blob) => {
-      if (blob) await sendImageToAi(new File([blob], "live-camera-frame.jpg", { type: "image/jpeg" }), "camera");
-    }, "image/jpeg", 0.85);
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Unable to prepare a camera frame for analysis.");
+      context.drawImage(media, 0, 0, width, height);
+      const blob = await new Promise((resolve, reject) => {
+        canvas.toBlob(
+          (frame) => frame
+            ? resolve(frame)
+            : reject(new Error("Unable to capture a camera frame. Check the camera stream permissions.")),
+          "image/jpeg",
+          0.85,
+        );
+      });
+      await sendImageToAi(new File([blob], "live-camera-frame.jpg", { type: "image/jpeg" }), "camera");
+    } catch (error) {
+      setAiError(error.message || "Unable to capture the current camera frame.");
+    }
   };
 
   useEffect(() => {
@@ -420,14 +433,14 @@ export default function LivePen() {
               <FaUpload className="me-2" /> {aiProcessing ? "Analyzing live feed..." : "Test with image upload"}
               <input type="file" accept="image/*" onChange={processAiImage} hidden disabled={aiProcessing} />
             </label>
-            <button type="button" className="btn btn-outline-primary" onClick={analyzeCurrentFrame} disabled={!cameraStream || aiProcessing || !aiStatus.connected}>
+            <button type="button" className="btn btn-outline-primary" onClick={analyzeCurrentFrame} disabled={!cameraActive || aiProcessing || !aiStatus.connected}>
               Analyze now
             </button>
             <label className="form-check form-switch mb-0">
-              <input className="form-check-input" type="checkbox" checked={autoAnalyze} onChange={(event) => setAutoAnalyze(event.target.checked)} disabled={!cameraStream || !aiStatus.connected} />
+              <input className="form-check-input" type="checkbox" checked={autoAnalyze} onChange={(event) => setAutoAnalyze(event.target.checked)} disabled={!cameraActive || !aiStatus.connected} />
               <span className="form-check-label small">Auto-analyze every 5 seconds</span>
             </label>
-              <span className="small text-muted">{autoAnalyze && cameraStream ? "Live analysis active" : "Live analysis paused"} · {aiStatus.models.length ? aiStatus.models.join(", ") : "no models"}</span>
+              <span className="small text-muted">{autoAnalyze && cameraActive ? "Live analysis active" : "Live analysis paused"} · {aiStatus.models.length ? aiStatus.models.join(", ") : "no models"}</span>
           </div>
           {aiError && <div className="alert alert-warning mt-3 mb-0">{aiError} Start the FastAPI backend on port 8000 first.</div>}
           {aiResults.length > 0 && (

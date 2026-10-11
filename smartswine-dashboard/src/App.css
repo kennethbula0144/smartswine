@@ -1578,13 +1578,16 @@ body {
 .live-video-stage {
   position: relative;
   overflow: hidden;
-  min-height: 320px;
   border-radius: 18px;
   background: #17232b;
 }
 
 .live-video-stage .live-camera-video {
   display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  object-fit: contain;
 }
 
 .live-ai-overlay {
@@ -1615,6 +1618,11 @@ body {
 .camera-panel .live-camera-video {
   height: 100%;
   object-fit: cover;
+}
+
+.camera-panel .live-video-stage .live-camera-video {
+  height: auto;
+  object-fit: contain;
 }
 
 .camera-placeholder-compact {
