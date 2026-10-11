@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Trebuchet MS", "Arial Narrow", sans-serif;
+  color: #17232b;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(255, 214, 102, 0.3), transparent 24%),
+    radial-gradient(circle at 96% 8%, rgba(127, 211, 197, 0.26), transparent 22%),
+    #f4f7f5;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Ensure sidebar links override Bootstrap defaults */
+.sidebar-panel .sidebar-link,
+.sidebar-panel .sidebar-link span,
+.sidebar-panel .sidebar-link svg {
+  color: rgba(255,255,255,0.92);
+  text-decoration: none;
+}
+
+.sidebar-panel .sidebar-link {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-panel .sidebar-link:focus,
+.sidebar-panel .sidebar-link:hover {
+  text-decoration: none;
+}
